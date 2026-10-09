@@ -61,7 +61,7 @@ export function AppHeader({ title, back, logo, eyebrow, right, bell = true, avat
   const [notifOpen, setNotifOpen] = useState(false);
   const isTenant = role === 'tenant';
   return (
-    <header className="sticky top-0 z-40 border-b border-tint-border bg-cream/95 backdrop-blur-md">
+    <header className="sticky top-0 z-40 border-b border-tint-border bg-cream/95 pt-[env(safe-area-inset-top)] backdrop-blur-md">
       <div className="flex h-16 items-center justify-between gap-3 px-4">
         <div className="flex min-w-0 items-center gap-2.5">
           {back && (
@@ -164,7 +164,7 @@ export function LandlordNav() {
 export function Sheet({ open, onClose, title, eyebrow, icon, children }) {
   if (!open) return null;
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center bg-inverse-surface/60 p-3 backdrop-blur-sm animate-fade sm:items-center" onClick={onClose}>
+    <div className="fixed inset-0 z-50 flex items-end justify-center bg-inverse-surface/60 p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-[max(0.75rem,env(safe-area-inset-top))] backdrop-blur-sm animate-fade sm:items-center" onClick={onClose}>
       <div
         className="animate-sheet max-h-[88vh] w-full max-w-[420px] overflow-y-auto rounded-2xl bg-cream p-5 shadow-2xl"
         onClick={(e) => e.stopPropagation()}
@@ -197,7 +197,7 @@ export function Toast() {
   const { toast } = useApp();
   if (!toast) return null;
   return (
-    <div key={toast.key} className="animate-sheet pointer-events-none fixed left-1/2 top-20 z-[60] flex max-w-[90vw] -translate-x-1/2 items-center gap-2 rounded-full bg-inverse-surface px-4 py-2.5 text-[13px] font-semibold text-inverse-on-surface shadow-xl">
+    <div key={toast.key} className="animate-sheet pointer-events-none fixed left-1/2 top-[calc(5rem+env(safe-area-inset-top))] z-[60] flex max-w-[90vw] -translate-x-1/2 items-center gap-2 rounded-full bg-inverse-surface px-4 py-2.5 text-[13px] font-semibold text-inverse-on-surface shadow-xl">
       <Icon name={toast.icon} className="text-[18px] text-primary-fixed" />
       <span>{toast.msg}</span>
     </div>

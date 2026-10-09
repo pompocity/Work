@@ -1,0 +1,11 @@
+{
+  "appId": "com.enterent.prototype",
+  "appName": "EnteRent",
+  "webDir": "dist",
+  "backgroundColor": "#FAF9F5",
+  "ios": {
+    "contentInset": "never",
+    "backgroundColor": "#FAF9F5",
+    "scrollEnabled": true
+  }
+}

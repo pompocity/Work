@@ -27,7 +27,7 @@ function CameraModal({ room, onClose, onSave }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 animate-fade">
       <div className="relative flex h-full max-h-[760px] w-full max-w-app flex-col bg-neutral-950 text-white">
-        <div className="flex items-center justify-between p-4">
+        <div className="flex items-center justify-between p-4 pt-[max(1rem,env(safe-area-inset-top))]">
           <button onClick={onClose} aria-label="Close camera" className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10">
             <Icon name="close" className="text-[22px]" />
           </button>
@@ -51,7 +51,7 @@ function CameraModal({ room, onClose, onSave }) {
             )}
           </div>
         </div>
-        <div className="flex items-center justify-center gap-6 p-6">
+        <div className="flex items-center justify-center gap-6 p-6 pb-[max(1.5rem,env(safe-area-inset-bottom))]">
           {phase === 'review' ? (
             <>
               <button

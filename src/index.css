@@ -13,6 +13,13 @@
     -webkit-font-smoothing: antialiased;
     -webkit-tap-highlight-color: transparent;
   }
+  /* On phone-width screens (incl. the iOS app) the cream column fills the screen; match overscroll. */
+  @media (max-width: 440px) {
+    html,
+    body {
+      background: #faf9f5;
+    }
+  }
   button {
     cursor: pointer;
   }

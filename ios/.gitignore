@@ -1,0 +1,12 @@
+App/build
+App/Pods
+App/output
+DerivedData
+xcuserdata
+
+# Cordova plugins for Capacitor (unused with Swift Package Manager)
+capacitor-cordova-ios-plugins
+
+# NOTE: App/App/public, App/App/capacitor.config.json and App/App/config.xml are
+# intentionally committed so the Mac can build from a fresh clone with Xcode alone.
+# Regenerate them on any machine with `npm run ios:sync`.

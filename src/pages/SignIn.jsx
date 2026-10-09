@@ -63,7 +63,7 @@ export default function SignIn() {
   };
 
   return (
-    <Screen className="flex flex-col justify-between px-5 pb-10 pt-8">
+    <Screen className="flex flex-col justify-between px-5 pb-[max(2.5rem,env(safe-area-inset-bottom))] pt-[calc(2rem+env(safe-area-inset-top))]">
       <div>
         <header className="mb-6 mt-2 flex flex-col items-center text-center">
           <div className="mb-2 flex items-center gap-3">

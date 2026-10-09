@@ -80,7 +80,7 @@ function CameraModal({ room, onClose, onSave }) {
 
 export default function Inspection() {
   const navigate = useNavigate();
-  const { rooms, completeRoom, inspectionSubmitted, submitInspection, showToast } = useApp();
+  const { rooms, completeRoom, inspectionSubmitted, submitInspection, inspectionCadence, showToast } = useApp();
   const [camera, setCamera] = useState(null);
   const doneCount = rooms.filter((r) => r.done).length;
   const pct = Math.round((doneCount / rooms.length) * 100);
@@ -125,15 +125,12 @@ export default function Inspection() {
         <section className="card space-y-4 p-4">
           <div className="flex flex-wrap items-center gap-2">
             <span className="inline-flex items-center gap-1.5 rounded-full bg-indigo/10 px-3 py-1 text-xs font-medium text-indigo">
-              <Icon name="event_note" className="text-[15px]" /> Due in 12 days • Oct 30
-            </span>
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200/80 bg-emerald-50 px-2.5 py-1 text-xs font-medium text-emerald-800">
-              <Icon name="verified_user" fill className="text-[15px] text-teal" /> Deposit Safe • Zero in-person visits
+              <Icon name="event_note" className="text-[15px]" /> {inspectionCadence} • Due in 12 days • Oct 30
             </span>
           </div>
           <div>
-            <h2 className="text-xl font-bold leading-snug tracking-tight text-slate-900">Mid-Year Video Walkthrough</h2>
-            <p className="mt-1 text-sm leading-relaxed text-slate-600">Self-guided room scan to protect your security deposit. No in-person visit required.</p>
+            <h2 className="text-xl font-bold leading-snug tracking-tight text-slate-900">Video Walkthrough</h2>
+            <p className="mt-1 text-sm leading-relaxed text-slate-600">Self-guided room scan</p>
           </div>
           <div className="space-y-2.5 rounded-xl border border-tint-border bg-tint-deep p-3.5">
             <div className="flex items-center justify-between">
@@ -155,12 +152,6 @@ export default function Inspection() {
         </section>
 
         <section className="space-y-3">
-          <div className="flex items-center justify-between px-1">
-            <span className="text-sm font-bold uppercase tracking-wider text-slate-700">Inspection Breakdown</span>
-            <span className="rounded border border-[#E0DDD8] bg-white px-2 py-0.5 text-xs font-semibold text-slate-600">
-              {nextRoom ? `Step ${doneCount + 1} of ${rooms.length}` : 'All steps done'}
-            </span>
-          </div>
 
           {rooms.map((r) => {
             if (r.done)

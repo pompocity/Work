@@ -96,12 +96,13 @@ function AlertCard({ ticket, onDispatch, onDismiss, showToast }) {
 export default function PropertyPortal() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { properties, ticket, showToast } = useApp();
+  const { properties, ticket, showToast, inspectionCadence, setInspectionCadence } = useApp();
   const [tab, setTab] = useState('Dashboard');
   const [dismissed, setDismissed] = useState(false);
   const [sheet, setSheet] = useState(null); // ledger | checklist | log
   const [locks, setLocks] = useState({ front: true, rear: true, garage: false });
-  const [checklist, setChecklist] = useState({ hvac: true, smoke: true, plumbing: true, gutters: false, freq: 'Quarterly' });
+  const [checklist, setChecklist] = useState({ hvac: true, smoke: true, plumbing: true, gutters: false });
+  const [freq, setFreq] = useState(inspectionCadence);
   const p = properties.find((x) => x.id === id);
   if (!p) return <Navigate to="/landlord/portfolio" replace />;
 
@@ -473,7 +474,7 @@ export default function PropertyPortal() {
         <label className="label mt-3">Frequency</label>
         <div className="mb-4 grid grid-cols-3 gap-2">
           {['Monthly', 'Quarterly', 'Biannual'].map((f) => (
-            <button key={f} onClick={() => setChecklist((c) => ({ ...c, freq: f }))} className={`rounded-lg py-2 text-[12px] font-bold ${checklist.freq === f ? 'bg-indigo text-white' : 'border border-tint-border bg-white text-indigo'}`}>
+            <button key={f} onClick={() => setFreq(f)} className={`rounded-lg py-2 text-[12px] font-bold ${freq === f ? 'bg-indigo text-white' : 'border border-tint-border bg-white text-indigo'}`}>
               {f}
             </button>
           ))}
@@ -481,7 +482,8 @@ export default function PropertyPortal() {
         <button
           onClick={() => {
             setSheet(null);
-            showToast(`${checklist.freq} tenant video walkthrough scheduled`, 'event_available');
+            setInspectionCadence(freq);
+            showToast(`${freq} tenant video walkthrough scheduled`, 'event_available');
           }}
           className="btn-primary w-full"
         >

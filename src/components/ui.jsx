@@ -205,14 +205,14 @@ export function Toast() {
 }
 
 function NotificationsSheet({ open, onClose }) {
-  const { role, ticket } = useApp();
+  const { role, ticket, inspectionCadence } = useApp();
   const navigate = useNavigate();
   const v = ticket.vendor;
   const tenantItems = [
     ticket.stage === 'awaiting' && { icon: 'hourglass_top', title: 'Request sent to landlord', body: `Ticket #${ticket.id} is awaiting approval & vendor dispatch.`, to: '/tenant/tracker' },
     ticket.stage === 'dispatched' && { icon: 'local_shipping', title: `${v?.tech} is on the way`, body: `${v?.company} · ETA ${v?.eta}`, to: '/tenant/tracker' },
     ticket.stage === 'completed' && { icon: 'task_alt', title: 'Repair closed', body: `Ticket #${ticket.id} signed off. Thanks for your review!`, to: '/tenant/tracker' },
-    { icon: 'event_available', title: 'Inspection due in 12 days', body: 'Mid-Year Video Walkthrough · Oct 30', to: '/tenant/inspection' },
+    { icon: 'event_available', title: 'Inspection due in 12 days', body: `${inspectionCadence} Video Walkthrough · Oct 30`, to: '/tenant/inspection' },
     { icon: 'payments', title: 'May rent paid', body: 'Autopay cleared $2,400.00 via Wells ACH', to: '/tenant/unit' },
   ].filter(Boolean);
   const landlordItems = [

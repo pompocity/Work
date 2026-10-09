@@ -16,7 +16,7 @@ const TITLES = {
 export default function ReviewUrgency() {
   const navigate = useNavigate();
   const { draft, submitReport, resetDraft } = useApp();
-  const aiUrgent = draft.pooling === 'pooling' || draft.valve !== 'stopped';
+  const aiUrgent = draft.pooling === 'pooling' || ['dripping', 'unknown'].includes(draft.valve) || draft.onset === 'worsening';
   const recommended = aiUrgent ? 'urgent' : 'standard';
   const [tier, setTier] = useState(recommended);
   const [note, setNote] = useState('');
@@ -63,7 +63,7 @@ export default function ReviewUrgency() {
   );
 
   return (
-    <Screen header={<AppHeader title="AI Diagnostic Triage" back="/tenant/triage" bell={false} />} bg="bg-surface">
+    <Screen header={<AppHeader title="AI Diagnostic Triage" back="/tenant/triage?q=3" bell={false} />} bg="bg-surface">
       <div className="flex flex-col gap-6 pb-4">
         <section className="flex flex-col gap-1.5">
           <div className="flex items-center justify-between">

@@ -321,7 +321,7 @@ export default function VendorSelection() {
           ))}
         </div>
         <p className="mt-3 flex items-center gap-1 text-[12px] text-teal">
-          <Icon name="auto_awesome" className="text-[16px]" /> AI: P-trap seal degradation observed (98% conf.)
+          <Icon name="auto_awesome" className="text-[16px]" /> AI: P-trap seal degradation observed (98% confidence)
         </p>
       </Sheet>
 

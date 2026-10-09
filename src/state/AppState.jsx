@@ -7,7 +7,7 @@ import { PROPERTIES, ROOMS, VENDORS } from '../data/mock.js';
   tenant tracks "dispatched" -> tenant signs off -> "completed".
 */
 
-const STORAGE_KEY = 'enterent-demo-v1';
+const STORAGE_KEY = 'enterent-demo-v2';
 
 const initialTicket = () => ({
   id: '9042',
@@ -32,9 +32,11 @@ const initialDraft = () => ({
   category: 'plumbing',
   urgency: 'urgent',
   description: initialTicket().description,
-  valve: 'stopped',
-  pooling: 'bucket',
-  explanation: '',
+  // AI triage answers: option id or 'other' (with free text in otherText)
+  valve: '',
+  pooling: '',
+  onset: '',
+  otherText: { valve: '', pooling: '', onset: '' },
   tier: 'standard',
   window: 'Today · 2 – 4 PM',
   note: '',

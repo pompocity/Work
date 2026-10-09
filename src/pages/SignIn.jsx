@@ -80,8 +80,7 @@ export default function SignIn() {
         </header>
 
         <section className="mb-5">
-          <div className="mb-2 flex items-center justify-between px-1">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-muted">Access Persona</span>
+          <div className="mb-2 flex items-center justify-end px-1">
             <span className="flex items-center gap-1 text-[11px] font-medium text-teal">
               <span className="h-1.5 w-1.5 rounded-full bg-teal" /> Switchable anytime
             </span>

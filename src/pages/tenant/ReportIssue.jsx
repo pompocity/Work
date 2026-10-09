@@ -30,17 +30,11 @@ export default function ReportIssue() {
 
   const footer = (
     <div className="sticky bottom-0 z-40 border-t border-tint-border bg-tint-light/95 p-4 pb-[max(1rem,env(safe-area-inset-bottom))] shadow-[0_-4px_16px_rgba(0,0,0,0.04)] backdrop-blur-md">
-      <button
-        onClick={() => {
-          if (!draft.description.trim()) return showToast('Add a short description first', 'edit_note');
-          navigate('/tenant/triage');
-        }}
-        className="btn-orange h-12 w-full text-[15px]"
-      >
-        Proceed to AI Diagnostic Triage (Step 1) <Icon name="arrow_forward" className="text-[20px]" />
+      <button onClick={() => navigate('/tenant/triage')} className="btn-orange h-12 w-full text-[15px]">
+        Proceed to Issue Triage <Icon name="arrow_forward" className="text-[20px]" />
       </button>
       <p className="mt-2 flex items-center justify-center gap-1.5 text-center text-[12px] font-semibold text-indigo/70">
-        <Icon name="verified_user" className="text-[16px] text-teal" /> Feeds directly to Landlord portal • Fair benchmark rate protected
+        <Icon name="verified_user" className="text-[16px] text-teal" /> Feeds directly to Landlord portal
       </p>
     </div>
   );
@@ -113,20 +107,15 @@ export default function ReportIssue() {
               <Icon name="warning" fill className="shrink-0 text-[20px] text-orange" /> Active drip at P-trap joint
             </p>
             <span className="inline-flex shrink-0 items-center gap-1 rounded-full border border-teal/20 bg-teal/10 px-2.5 py-1 text-xs font-bold text-teal">
-              <Icon name="verified" className="text-[14px]" /> 98% Conf.
+              <Icon name="verified" className="text-[14px]" /> 98% Confidence
             </span>
           </div>
         </div>
 
         <div className="card flex flex-col gap-3.5 p-4">
-          <div className="flex items-start justify-between gap-2">
-            <div>
-              <h3 className="text-sm font-bold text-indigo">Tenant Initial Urgency Assessment</h3>
-              <p className="text-xs text-indigo/60">Specify how this issue impacts your living conditions</p>
-            </div>
-            <span className="flex shrink-0 items-center gap-1 rounded-full border border-tint-border bg-indigo/5 px-2.5 py-1 text-xs font-bold text-indigo/70">
-              <Icon name="tune" className="text-[14px]" /> Initial Input
-            </span>
+          <div>
+            <h3 className="text-sm font-bold text-indigo">Tenant Urgency Assessment</h3>
+            <p className="text-xs text-indigo/60">Specify how this issue impacts your living conditions</p>
           </div>
           <div className="grid grid-cols-3 gap-2.5">
             {TIERS.map((t) => {
@@ -148,18 +137,6 @@ export default function ReportIssue() {
                 </button>
               );
             })}
-          </div>
-          <div className="flex flex-col gap-1.5">
-            <label htmlFor="desc" className="flex items-center gap-1 text-xs font-bold text-indigo">
-              <Icon name="edit_note" className="text-[15px] text-teal" /> Description & Incident Notes
-            </label>
-            <textarea
-              id="desc"
-              rows={3}
-              value={draft.description}
-              onChange={(e) => updateDraft({ description: e.target.value })}
-              className="w-full resize-none rounded-xl border border-tint-border bg-tint-deep p-3 text-xs leading-relaxed text-indigo focus:border-teal focus:outline-none focus:ring-1 focus:ring-teal"
-            />
           </div>
         </div>
 

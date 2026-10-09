@@ -17,6 +17,8 @@ import VendorSelection from './pages/landlord/VendorSelection.jsx';
 import TriageQueue from './pages/landlord/TriageQueue.jsx';
 import Vendors from './pages/landlord/Vendors.jsx';
 import Account from './pages/landlord/Account.jsx';
+import AutoApproval from './pages/landlord/AutoApproval.jsx';
+import Financials from './pages/landlord/Financials.jsx';
 
 export default function App() {
   const { pathname } = useLocation();
@@ -47,6 +49,9 @@ export default function App() {
         <Route path="/landlord/triage" element={<TriageQueue />} />
         <Route path="/landlord/vendors" element={<Vendors />} />
         <Route path="/landlord/account" element={<Account />} />
+        <Route path="/landlord/auto-approval" element={<AutoApproval />} />
+        <Route path="/landlord/financials" element={<Financials />} />
+        <Route path="/landlord/financials/:id" element={<Financials />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
       <Toast />

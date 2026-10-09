@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Navigate, useNavigate, useParams } from 'react-router-dom';
 import { AppHeader, Icon, Screen, Sheet, Toggle } from '../../components/ui.jsx';
 import { useApp } from '../../state/AppState.jsx';
-import { money } from '../../data/mock.js';
+import { financialsFor, money } from '../../data/mock.js';
 
 const TABS = ['Dashboard', 'Active Triage', 'Units & Tenants', 'Appliances & HVAC', 'Smart Access'];
 
@@ -99,7 +99,7 @@ export default function PropertyPortal() {
   const { properties, ticket, showToast, inspectionCadence, setInspectionCadence } = useApp();
   const [tab, setTab] = useState('Dashboard');
   const [dismissed, setDismissed] = useState(false);
-  const [sheet, setSheet] = useState(null); // ledger | checklist | log
+  const [sheet, setSheet] = useState(null); // checklist | log
   const [locks, setLocks] = useState({ front: true, rear: true, garage: false });
   const [checklist, setChecklist] = useState({ hvac: true, smoke: true, plumbing: true, gutters: false });
   const [freq, setFreq] = useState(inspectionCadence);
@@ -109,6 +109,7 @@ export default function PropertyPortal() {
   const isMaple = p.id === 'maple';
   const alertActive = isMaple && ticket.stage === 'awaiting';
   const showAlert = isMaple && !dismissed;
+  const fin = financialsFor(p);
   const gross = p.units.reduce((a, u) => a + (u.vacant ? 0 : u.rent), 0);
 
   const alert = showAlert && (
@@ -229,7 +230,7 @@ export default function PropertyPortal() {
             </div>
             <div className="flex flex-wrap items-center gap-6">
               <div className="flex flex-col">
-                <span className="text-[11px] font-bold uppercase tracking-wider text-muted">Gross Monthly</span>
+                <span className="text-[11px] font-bold uppercase tracking-wider text-muted">Monthly Rent</span>
                 <span className="text-[22px] font-bold text-teal">{money(gross || p.rent)}</span>
               </div>
               <div className="flex flex-col">
@@ -331,31 +332,29 @@ export default function PropertyPortal() {
               <div className="card p-4">
                 <div className="mb-3 flex items-center justify-between gap-2">
                   <span className="flex items-center gap-1.5 text-[15px] font-semibold text-on-surface">
-                    <Icon name="receipt_long" className="text-[20px] text-primary" /> Rent Intake (Current Cycle)
+                    <Icon name="monitoring" className="text-[20px] text-primary" /> Financials
                   </span>
-                  <button onClick={() => setSheet('ledger')} className="shrink-0 text-[12px] font-semibold text-primary hover:underline">
-                    Ledger →
-                  </button>
+                  <span className="text-[11px] font-bold text-on-surface-variant">Trailing 12 months</span>
                 </div>
-                <div className="flex flex-col gap-2">
-                  {p.units
-                    .filter((u) => !u.vacant)
-                    .map((u) => (
-                      <div key={u.id} className="flex items-center justify-between rounded-lg bg-surface-container-low p-3">
-                        <div className="flex items-center gap-2.5">
-                          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary">
-                            <Icon name="check_circle" className="text-[16px]" />
-                          </div>
-                          <div>
-                            <p className="text-[14px] font-medium text-on-surface">Unit {u.id} Autopay</p>
-                            <p className="text-[12px] text-on-surface-variant">Cleared Oct 1 • {u.bank}</p>
-                          </div>
-                        </div>
-                        <span className="text-[14px] font-bold text-primary">+{money(u.rent)}.00</span>
+                {fin ? (
+                  <div className="grid grid-cols-3 gap-2">
+                    {[
+                      ['Annual Revenue', money(fin.annualRent), 'text-indigo'],
+                      ['Net Yield', `${(fin.capRate * 100).toFixed(2)}%`, 'text-teal'],
+                      ['Repairs YTD', money(fin.repairsYtd + (isMaple && ticket.stage === 'completed' ? ticket.vendor?.price || 0 : 0)), 'text-indigo'],
+                    ].map(([k, v, tone]) => (
+                      <div key={k} className="rounded-lg bg-surface-container-low p-2.5">
+                        <span className="block text-[10px] font-bold uppercase tracking-wider text-on-surface-variant">{k}</span>
+                        <span className={`text-[15px] font-bold ${tone}`}>{v}</span>
                       </div>
                     ))}
-                  {p.units.every((u) => u.vacant) && <p className="py-2 text-center text-[12px] text-muted">No rent collected — unit in make-ready.</p>}
-                </div>
+                  </div>
+                ) : (
+                  <p className="py-2 text-center text-[12px] text-muted">Financials populate after the first rent cycle.</p>
+                )}
+                <button onClick={() => navigate(`/landlord/financials/${p.id}`)} className="btn-primary mt-3 h-10 w-full text-[13px]">
+                  View Rent, Revenue & Yield <Icon name="arrow_forward" className="text-[18px]" />
+                </button>
               </div>
             </>
           )}
@@ -435,29 +434,6 @@ export default function PropertyPortal() {
           )}
         </div>
       </div>
-
-      <Sheet open={sheet === 'ledger'} onClose={() => setSheet(null)} title="Ledger History" icon="receipt_long" eyebrow={p.address}>
-        <div className="flex flex-col divide-y divide-tint-border">
-          {['Oct 1', 'Sep 1', 'Aug 1', 'Jul 1'].flatMap((d) =>
-            p.units
-              .filter((u) => !u.vacant)
-              .map((u) => (
-                <div key={d + u.id} className="flex items-center justify-between py-2.5 text-[13px]">
-                  <span className="text-ink">
-                    {d} · Unit {u.id}
-                  </span>
-                  <span className="font-bold text-teal">+{money(u.rent)}.00</span>
-                </div>
-              ))
-          )}
-          {isMaple && ticket.stage === 'completed' && (
-            <div className="flex items-center justify-between py-2.5 text-[13px]">
-              <span className="text-ink">Repair #{ticket.id} · {ticket.vendor?.company}</span>
-              <span className="font-bold text-error">−{money(ticket.vendor?.price || 0)}.00</span>
-            </div>
-          )}
-        </div>
-      </Sheet>
 
       <Sheet open={sheet === 'checklist'} onClose={() => setSheet(null)} title="Inspection Checklist" icon="assignment_turned_in" eyebrow="Automation">
         {[

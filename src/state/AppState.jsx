@@ -1,5 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { PROPERTIES, ROOMS, VENDORS } from '../data/mock.js';
+import { DEFAULT_RULES } from './autoApprove.js';
 
 /*
   Mock app state shared by both personas so the investor journey is continuous:
@@ -48,6 +49,7 @@ const initialState = () => ({
   draft: initialDraft(),
   rooms: ROOMS.map((r) => ({ ...r })),
   inspectionSubmitted: false,
+  autoApprove: DEFAULT_RULES,
   inspectionCadence: 'Biannual', // set by landlord in Property Portal checklist
   properties: PROPERTIES,
   guestPasses: [
@@ -150,6 +152,8 @@ export function AppStateProvider({ children }) {
         }),
       completeRoom: (id) =>
         setState((s) => ({ ...s, rooms: s.rooms.map((r) => (r.id === id ? { ...r, done: true, clip: `${30 + Math.floor(Math.random() * 20)}s` } : r)) })),
+      updateAutoApprove: (patch) => setState((s) => ({ ...s, autoApprove: { ...s.autoApprove, ...patch } })),
+      resetAutoApprove: () => setState((s) => ({ ...s, autoApprove: DEFAULT_RULES })),
       setInspectionCadence: (inspectionCadence) => setState((s) => ({ ...s, inspectionCadence })),
       submitInspection: () => setState((s) => ({ ...s, inspectionSubmitted: true })),
       addProperty: (p) => setState((s) => ({ ...s, properties: [...s.properties, p] })),

@@ -183,14 +183,14 @@ export default function Portfolio() {
 
       {/* Rollup stats */}
       <div className="mt-3 grid grid-cols-3 gap-1.5 px-4">
-        <div className="card rounded-xl p-2.5">
+        <button onClick={() => navigate('/landlord/financials')} className="card rounded-xl p-2.5 text-left hover:bg-tint-hover">
           <div className="flex items-center justify-between">
             <span className="text-[10px] font-bold uppercase tracking-wider text-on-surface-variant">Rent Roll</span>
             <Icon name="payments" className="text-[14px] text-primary" />
           </div>
           <span className="mt-1 block text-[22px] font-bold text-on-surface">${(rentRoll / 1000).toFixed(1)}k</span>
           <span className="block text-[11px] text-on-surface-variant">/ month gross</span>
-        </div>
+        </button>
         <div className="card rounded-xl p-2.5">
           <div className="flex items-center justify-between">
             <span className="text-[10px] font-bold uppercase tracking-wider text-on-surface-variant">Occupancy</span>

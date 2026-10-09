@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { AppHeader, Icon, Screen, Sheet } from '../../components/ui.jsx';
 import { useApp } from '../../state/AppState.jsx';
 import { IMAGES, PRIVATE_VENDORS, VENDORS } from '../../data/mock.js';
+import { evaluate } from '../../state/autoApprove.js';
 
 const BADGE = {
   teal: 'bg-primary-fixed text-on-primary-fixed-variant',
@@ -12,7 +13,8 @@ const BADGE = {
 
 export default function VendorSelection() {
   const navigate = useNavigate();
-  const { ticket, dispatchVendor, updateTicket, showToast } = useApp();
+  const { ticket, dispatchVendor, updateTicket, showToast, autoApprove } = useApp();
+  const rulesFor = (v, price) => evaluate(autoApprove, { category: ticket.category, urgency: ticket.urgency, price, rating: v.rating || 0, preferred: !v.rating });
   const [tab, setTab] = useState('market');
   const [selected, setSelected] = useState(null);
   const [addOpen, setAddOpen] = useState(false);
@@ -110,7 +112,9 @@ export default function VendorSelection() {
             </div>
             <div className="flex items-center justify-between pt-0.5">
               <span className="flex items-center gap-1 text-[12px] text-on-surface-variant">
-                <span className="h-2 w-2 rounded-full bg-primary" /> Pre-approved under owner auto-limit
+                <span className={`h-2 w-2 rounded-full ${autoApprove.enabled ? 'bg-primary' : 'bg-outline'}`} />
+                {autoApprove.enabled ? `Auto-approves up to $${autoApprove.maxAmount}` : 'Auto-approval off'}
+                <button onClick={() => navigate('/landlord/auto-approval')} className="ml-1 font-bold text-secondary underline">Rules</button>
               </span>
               <button
                 onClick={() => {
@@ -197,6 +201,15 @@ export default function VendorSelection() {
                     <span className={`rounded px-2 py-0.5 text-[11px] font-bold ${under >= 0 ? 'bg-primary-fixed/40 text-on-primary-fixed-variant' : 'bg-error-container text-on-error-container'}`}>
                       {under >= 0 ? `$${under} under budget` : `$${-under} over budget`}
                     </span>
+                    {(() => {
+                      const ev = rulesFor(v, v.price);
+                      return (
+                        <span title={ev.reasons.join(' · ')} className={`flex items-center gap-1 rounded px-2 py-0.5 text-[11px] font-bold ${ev.ok ? 'bg-indigo text-white' : 'bg-surface-container-high text-on-surface-variant'}`}>
+                          <Icon name={ev.ok ? 'bolt' : 'front_hand'} className="text-[13px]" />
+                          {ev.ok ? 'Auto-approves' : 'Needs your approval'}
+                        </span>
+                      );
+                    })()}
                   </div>
                   <div className="flex items-center gap-2 pt-1">
                     <button
@@ -289,6 +302,18 @@ export default function VendorSelection() {
                 <span className="text-right font-bold text-primary">SMS Prompt queued for Sarah Miller</span>
               </div>
             </div>
+            {(() => {
+              const ev = rulesFor(selected.vendor, selected.price);
+              return (
+                <div className={`mt-2 rounded-lg p-2.5 text-[12px] ${ev.ok ? 'bg-teal/10 text-teal' : 'bg-orange-soft text-orange-dark'}`}>
+                  <p className="flex items-center gap-1 font-bold">
+                    <Icon name={ev.ok ? 'bolt' : 'front_hand'} className="text-[16px]" />
+                    {ev.ok ? 'Matches your auto-approval rules' : 'Outside your auto-approval rules — you are approving manually'}
+                  </p>
+                  {!ev.ok && <p className="mt-0.5 text-ink-mid">{ev.reasons.join(' · ')}</p>}
+                </div>
+              );
+            })()}
             {selected.price > budget && <p className="mt-2 text-[11px] font-semibold text-error">Quote exceeds approved budget — confirming raises the cap for this ticket.</p>}
             <button onClick={confirm} disabled={sending} className="btn-primary mt-4 h-12 w-full">
               {sending ? (

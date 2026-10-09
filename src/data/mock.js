@@ -245,3 +245,70 @@ export const WINDOWS = [
 ];
 
 export const money = (n) => '$' + n.toLocaleString('en-US');
+
+// Per-property financials. Monthly figures; history is the trailing 12 months of rent collected.
+export const FIN_MONTHS = ['Nov', 'Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct'];
+
+export const FINANCIALS = {
+  maple: {
+    value: 1150000,
+    purchase: { price: 985000, year: 2021 },
+    mortgage: 1520,
+    opex: [
+      { label: 'Property tax', amount: 690, icon: 'account_balance' },
+      { label: 'Insurance', amount: 210, icon: 'shield' },
+      { label: 'Maintenance reserve', amount: 180, icon: 'build' },
+      { label: 'EnteRent platform', amount: 160, icon: 'apps' },
+    ],
+    collected: Array(12).fill(4650),
+    repairsYtd: 1340,
+  },
+  harbor: {
+    value: 780000,
+    purchase: { price: 640000, year: 2019 },
+    mortgage: 1050,
+    opex: [
+      { label: 'Property tax', amount: 430, icon: 'account_balance' },
+      { label: 'Insurance', amount: 150, icon: 'shield' },
+      { label: 'HOA dues', amount: 85, icon: 'groups' },
+      { label: 'Maintenance reserve', amount: 75, icon: 'build' },
+    ],
+    collected: Array(12).fill(3200),
+    repairsYtd: 610,
+  },
+  oak: {
+    value: 640000,
+    purchase: { price: 512000, year: 2022 },
+    mortgage: 1190,
+    opex: [
+      { label: 'Property tax', amount: 380, icon: 'account_balance' },
+      { label: 'Insurance', amount: 120, icon: 'shield' },
+      { label: 'Utilities (vacant)', amount: 95, icon: 'bolt' },
+    ],
+    collected: [...Array(10).fill(2700), 0, 0],
+    repairsYtd: 4180,
+  },
+};
+
+// Derived metrics used by the Financials page and Property Detail summary.
+export function financialsFor(p) {
+  const f = FINANCIALS[p.id];
+  if (!f) return null;
+  const opexMonthly = f.opex.reduce((a, o) => a + o.amount, 0);
+  const annualRent = p.rent * 12;
+  const collected12 = f.collected.reduce((a, n) => a + n, 0);
+  const noi = annualRent - opexMonthly * 12;
+  const occupied = f.collected[f.collected.length - 1] > 0;
+  const cashFlow = (occupied ? p.rent : 0) - opexMonthly - f.mortgage;
+  return {
+    ...f,
+    opexMonthly,
+    annualRent,
+    collected12,
+    noi,
+    capRate: noi / f.value,
+    cashFlow,
+    occupied,
+    equity: f.value - f.purchase.price,
+  };
+}

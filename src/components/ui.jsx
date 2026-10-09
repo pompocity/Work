@@ -151,10 +151,10 @@ export function TenantNav() {
 export function LandlordNav() {
   return (
     <NavBar>
-      <NavItem to="/landlord/portfolio" icon="location_city" label="Portfolio" also={['/landlord/property']} />
+      <NavItem to="/landlord/portfolio" icon="location_city" label="Portfolio" also={['/landlord/property', '/landlord/financials']} />
       <NavItem to="/landlord/triage" icon="build" label="Triage" also={['/landlord/dispatch']} />
       <NavItem to="/landlord/vendors" icon="engineering" label="Vendors" />
-      <NavItem to="/landlord/account" icon="account_circle" label="Account" />
+      <NavItem to="/landlord/account" icon="account_circle" label="Account" also={['/landlord/auto-approval']} />
     </NavBar>
   );
 }

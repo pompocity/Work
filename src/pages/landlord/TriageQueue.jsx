@@ -2,11 +2,12 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AppHeader, Icon, Screen } from '../../components/ui.jsx';
 import { useApp } from '../../state/AppState.jsx';
-import { TICKET_HISTORY, money } from '../../data/mock.js';
+import { CATEGORIES, TICKET_HISTORY, money } from '../../data/mock.js';
+import { summarize } from '../../state/autoApprove.js';
 
 export default function TriageQueue() {
   const navigate = useNavigate();
-  const { ticket, showToast } = useApp();
+  const { ticket, showToast, autoApprove } = useApp();
   const [view, setView] = useState('open');
   const isOpen = ticket.stage !== 'completed';
 
@@ -104,13 +105,14 @@ export default function TriageQueue() {
           </div>
         )}
 
-        <div className="card flex items-start gap-3 p-4">
+        <button onClick={() => navigate('/landlord/auto-approval')} className="card flex items-start gap-3 p-4 text-left hover:bg-tint-hover">
           <Icon name="smart_toy" className="text-[24px] text-teal" />
-          <div>
+          <div className="flex-1">
             <h4 className="text-[14px] font-bold text-indigo">AI Auto-Approve</h4>
-            <p className="text-[12px] text-muted">Repairs under $250 matching the Austin benchmark are pre-approved. Adjust in Account → Automation.</p>
+            <p className="text-[12px] text-muted">{summarize(autoApprove, CATEGORIES.length)}</p>
           </div>
-        </div>
+          <Icon name="chevron_right" className="self-center text-[20px] text-muted" />
+        </button>
       </div>
     </Screen>
   );
